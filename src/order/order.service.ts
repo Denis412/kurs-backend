@@ -22,13 +22,16 @@ export class OrderService {
       createOrderDto.direction_id,
     );
 
-    let createdOrder = null;
+    let createdOrder: Order | null = null;
     try {
       createdOrder = this.orderRepository.create({
         ...createOrderDto,
         user,
         direction,
       });
+
+      delete createdOrder?.user.password;
+      delete createdOrder?.user.role;
 
       return await this.orderRepository.save(createdOrder);
     } catch (e) {
