@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { DirectionModule } from './direction/direction.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DirectionModule } from './direction/direction.module';
     UserModule,
     AuthModule,
     DirectionModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [

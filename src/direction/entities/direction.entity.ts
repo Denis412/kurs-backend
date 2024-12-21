@@ -1,7 +1,9 @@
+import { Order } from 'src/order/entities/order.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -22,6 +24,9 @@ export class Direction {
 
   @Column({ type: 'tinyint' })
   index_visible: boolean;
+
+  @OneToMany(() => Order, (order) => order.direction)
+  orders: Order[];
 
   @CreateDateColumn()
   created_at: Date;
