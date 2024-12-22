@@ -42,9 +42,24 @@ export class OrderController {
     return this.orderService.findAllByUserId(+user.userId);
   }
 
+  @Get('statistics')
+  getStatistics() {
+    return this.orderService.getStatistics();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(+id);
+  }
+
+  @Patch(':id/accept')
+  acceptOrder(@Param('id') id: string) {
+    return this.orderService.acceptOrder(+id);
+  }
+
+  @Patch(':id/cancel')
+  cancelOrder(@Param('id') id: string) {
+    return this.orderService.cancelOrder(+id);
   }
 
   @Patch(':id')

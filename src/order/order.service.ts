@@ -19,6 +19,28 @@ export class OrderService {
     private readonly directionService: DirectionService,
   ) {}
 
+  async acceptOrder(id: number) {
+    const acceptStatus = await this.orderStatusRepository.findOneBy({
+      name: 'Оплачено',
+    });
+
+    return this.orderRepository.save({
+      id,
+      status: acceptStatus,
+    });
+  }
+
+  async cancelOrder(id: number) {
+    const cancelStatus = await this.orderStatusRepository.findOneBy({
+      name: 'Отказ',
+    });
+
+    return this.orderRepository.save({
+      id,
+      status: cancelStatus,
+    });
+  }
+
   async create(createOrderDto: CreateOrderDto) {
     const user = await this.userService.findOne(createOrderDto.user_id);
     const direction = await this.directionService.findOne(
@@ -42,7 +64,6 @@ export class OrderService {
 
       return await this.orderRepository.save(createdOrder);
     } catch (e) {
-      console.log(e.message);
       if (e.message.includes('Duplicate entry')) {
         throw new BadRequestException(
           'Вы уже подали заявку на это направление',
@@ -93,6 +114,34 @@ export class OrderService {
 
   findOne(id: number) {
     return this.orderRepository.findOneBy({ id });
+  }
+
+  async getStatistics() {
+    const allOrders = await this.orderRepository.find({
+      relations: ['status', 'direction'],
+    });
+
+    return allOrders.reduce(
+      (acc, el) => {
+        if (typeof acc.statuses[el.status?.name] === 'undefined') {
+          acc.statuses[el.status?.name] = 0;
+        }
+        if (typeof acc.directions[el.direction?.name] === 'undefined') {
+          acc.directions[el.direction?.name] = 0;
+        }
+
+        acc.statuses[el.status?.name]++;
+        acc.directions[el.direction?.name]++;
+        acc.all++;
+
+        return acc;
+      },
+      {
+        all: 0,
+        statuses: {},
+        directions: {},
+      } as any,
+    );
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
