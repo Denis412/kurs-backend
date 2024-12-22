@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Order } from 'src/order/entities/order.entity';
 import {
   Column,
@@ -19,9 +20,16 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ length: 255, nullable: true })
+  address: string;
+
   @Column({ length: 100, default: 'user' })
   role: string;
 
+  @Exclude()
   @Column()
   password: string;
 

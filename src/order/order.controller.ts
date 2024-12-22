@@ -17,8 +17,11 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  create(@Body() createOrderDto: CreateOrderDto, @GetUser() user: any) {
+    return this.orderService.create({
+      ...createOrderDto,
+      user_id: user.userId,
+    });
   }
 
   @Get('check/:directionId')
@@ -29,9 +32,14 @@ export class OrderController {
     return this.orderService.checkOrderDirection(+directionId, +user.userId);
   }
 
+  @Get('admin')
+  findAllAdmin() {
+    return this.orderService.findAllAdmin();
+  }
+
   @Get()
-  findAll(@GetUser() user: any) {
-    return this.orderService.findAll(+user.userId);
+  findAllByUserId(@GetUser() user: any) {
+    return this.orderService.findAllByUserId(+user.userId);
   }
 
   @Get(':id')

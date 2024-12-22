@@ -6,12 +6,15 @@ import { Order } from './entities/order.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { DirectionService } from 'src/direction/direction.service';
+import { OrderStatus } from './entities/order-status.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    @InjectRepository(OrderStatus)
+    private readonly orderStatusRepository: Repository<OrderStatus>,
     private readonly userService: UserService,
     private readonly directionService: DirectionService,
   ) {}
@@ -21,6 +24,9 @@ export class OrderService {
     const direction = await this.directionService.findOne(
       createOrderDto.direction_id,
     );
+    const orderStatus = await this.orderStatusRepository.findOneBy({
+      id: 1,
+    });
 
     let createdOrder: Order | null = null;
     try {
@@ -28,6 +34,7 @@ export class OrderService {
         ...createOrderDto,
         user,
         direction,
+        status: orderStatus,
       });
 
       delete createdOrder?.user.password;
@@ -35,6 +42,7 @@ export class OrderService {
 
       return await this.orderRepository.save(createdOrder);
     } catch (e) {
+      console.log(e.message);
       if (e.message.includes('Duplicate entry')) {
         throw new BadRequestException(
           'Вы уже подали заявку на это направление',
@@ -60,7 +68,26 @@ export class OrderService {
     };
   }
 
-  findAll(userId: number) {
+  findAllAdmin() {
+    return this.orderRepository
+      .createQueryBuilder('orders')
+      .leftJoinAndSelect('orders.status', 'status')
+      .leftJoinAndSelect('orders.direction', 'direction')
+      .leftJoinAndSelect('orders.user', 'user')
+      .select([
+        'orders.id as id',
+        'orders.name as name',
+        'orders.phone as phone',
+        'orders.address as address',
+        'user.email AS user_email',
+        'status.name AS status_name',
+        'direction.name AS direction_name',
+        'direction.price AS direction_price',
+      ])
+      .getRawMany();
+  }
+
+  findAllByUserId(userId: number) {
     return this.orderRepository.find({ where: { user: { id: userId } } });
   }
 

@@ -25,6 +25,9 @@ export class Direction {
   @Column({ type: 'tinyint' })
   index_visible: boolean;
 
+  @Column({ type: 'int', default: 0 })
+  free_seats: number;
+
   @OneToMany(() => Order, (order) => order.direction)
   orders: Order[];
 

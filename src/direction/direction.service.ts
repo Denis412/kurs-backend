@@ -16,6 +16,19 @@ export class DirectionService {
     return this.directionRepository.save(createDirectionDto);
   }
 
+  findAllAdmin() {
+    return this.directionRepository
+      .createQueryBuilder('directions')
+      .select([
+        'directions.id as id',
+        'directions.name as name',
+        'directions.price as price',
+        'directions.free_seats as free_seats',
+        'directions.img as img',
+      ])
+      .getRawMany();
+  }
+
   findAll(name?: string, indexVisible?: string) {
     const filter: any = {};
 

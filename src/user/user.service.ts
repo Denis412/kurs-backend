@@ -17,8 +17,17 @@ export class UserService {
     return this.userRepository.save(createUserDto);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  findAllAdmin() {
+    return this.userRepository
+      .createQueryBuilder('users')
+      .select([
+        'users.id as id',
+        'users.name as name',
+        'users.email as email',
+        'users.phone as phone',
+        'users.address as address',
+      ])
+      .getRawMany();
   }
 
   async findOne(id: number) {

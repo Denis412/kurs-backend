@@ -10,6 +10,7 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
+import { OrderStatus } from './order-status.entity';
 
 @Entity('orders')
 @Unique(['user', 'direction'])
@@ -37,6 +38,12 @@ export class Order {
   })
   @JoinColumn({ name: 'direction_id' })
   direction: Direction;
+
+  @ManyToOne(() => OrderStatus, (orderStatus) => orderStatus.orders, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'status_id' })
+  status: OrderStatus;
 
   @CreateDateColumn()
   created_at: Date;

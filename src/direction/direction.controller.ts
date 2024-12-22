@@ -29,6 +29,11 @@ export class DirectionController {
     return this.directionService.findAll(name, indexVisible);
   }
 
+  @Get('admin')
+  findAllAdmin() {
+    return this.directionService.findAllAdmin();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.directionService.findOne(+id);
