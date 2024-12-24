@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -14,6 +15,7 @@ export class UserController {
   }
 
   @Get('admin')
+  @Roles('moderator', 'admin')
   findAllAdmin() {
     return this.userService.findAllAdmin();
   }

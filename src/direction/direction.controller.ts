@@ -11,6 +11,7 @@ import {
 import { DirectionService } from './direction.service';
 import { CreateDirectionDto } from './dto/create-direction.dto';
 import { UpdateDirectionDto } from './dto/update-direction.dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('direction')
 export class DirectionController {
@@ -30,6 +31,7 @@ export class DirectionController {
   }
 
   @Get('admin')
+  @Roles('moderator', 'admin')
   findAllAdmin() {
     return this.directionService.findAllAdmin();
   }

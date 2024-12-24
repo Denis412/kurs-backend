@@ -11,6 +11,7 @@ import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('order')
 export class OrderController {
@@ -43,6 +44,7 @@ export class OrderController {
   }
 
   @Get('statistics')
+  @Roles('admin')
   getStatistics() {
     return this.orderService.getStatistics();
   }
@@ -53,11 +55,13 @@ export class OrderController {
   }
 
   @Patch(':id/accept')
+  @Roles('moderator', 'admin')
   acceptOrder(@Param('id') id: string) {
     return this.orderService.acceptOrder(+id);
   }
 
   @Patch(':id/cancel')
+  @Roles('moderator', 'admin')
   cancelOrder(@Param('id') id: string) {
     return this.orderService.cancelOrder(+id);
   }
